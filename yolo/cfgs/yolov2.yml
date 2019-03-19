@@ -5,7 +5,7 @@ log_name: "logs"
 
 labels: ["aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"]
 
-data_root_dir: "/data2/yichaoxiong/data/VOCdevkit/onedet_cache"
+data_root_dir: "C:\\Users\\AndrewHuang\\Documents\\GitHub\\ObjectDetection-OneStageDet\\yolo\\VOCdata\\onedet_cache"
 
 train:
     dataset: "train"
@@ -20,8 +20,8 @@ train:
     clear: False
 
     warmup_lr: 0.0001
-    lr_steps: [400,700,900,1000, 40000,60000] 
-    lr_rates: [0.0001,0.0005,0.0005,0.001, 0.0001,0.00001] 
+    lr_steps: [400,700,900,1000, 40000,60000]
+    lr_rates: [0.0001,0.0005,0.0005,0.001, 0.0001,0.00001]
     max_batches: 70200
     resize_interval: 10
 
@@ -37,7 +37,7 @@ train:
 test:
     dataset: "test"
     stdout: True
-    gpus: "3"
+    gpus: "-1"
     nworkers: 8
     pin_mem: True
 

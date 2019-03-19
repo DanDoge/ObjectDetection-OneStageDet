@@ -113,3 +113,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+# AndrewHuang 19/03
+
+/yolo/results
+/yolo/VOCdata
+/yolo/weights/*.dw

@@ -13,7 +13,7 @@ sys.path.insert(0, '.')
 import brambox.boxes as bbb
 
 DEBUG = True        # Enable some debug prints with extra information
-ROOT = '/data2/yichaoxiong/data/VOCdevkit'       # Root folder where the VOCdevkit is located
+ROOT = 'C:\\Users\\AndrewHuang\\Documents\\GitHub\\ObjectDetection-OneStageDet\\yolo\\VOCdata'       # Root folder where the VOCdevkit is located
 
 TRAINSET = [
     ('2012', 'train'),
@@ -30,7 +30,7 @@ def identify(xml_file):
     root_dir = ROOT
     root = ET.parse(xml_file).getroot()
     folder = root.find('folder').text
-    filename = root.find('filename').text 
+    filename = root.find('filename').text
     return f'{root_dir}/{folder}/JPEGImages/{filename}'
 
 
@@ -73,4 +73,3 @@ if __name__ == '__main__':
 
     print('Generating testing annotation file')
     bbb.generate('anno_pickle', test_annos, f'{ROOT}/onedet_cache/test.pkl')
-
