@@ -120,3 +120,4 @@ dmypy.json
 /yolo/results
 /yolo/VOCdata
 /yolo/weights/*.dw
+/yolo/COCO

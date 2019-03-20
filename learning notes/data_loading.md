@@ -91,7 +91,11 @@ class CustomDataset(vn_data.BramboxDataset):
 
 ```
 
+The BramboxDataset and its parent class Dataset are nothing special...yet.
+
 ### Problems left unsloved
 
 1. how is the .pkl files constructed? -- in labels.py
 2. deep into CustomDataset. -- in yolo/vedanet/data/\_dataset_brambox.py
+3. deep into bbb. -- it has a document on the Internet.
+4. bboxoffset / difficult, visible, truncate / labels mapping
