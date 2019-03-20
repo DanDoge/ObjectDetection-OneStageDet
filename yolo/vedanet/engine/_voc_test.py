@@ -31,6 +31,8 @@ class CustomDataset(vn_data.BramboxDataset):
 
     def __getitem__(self, index):
         img, anno = super(CustomDataset, self).__getitem__(index)
+        if img.size()[0] == 1:
+            img = img.repeat(3, 1, 1)
         for a in anno:
             a.ignore = a.difficult  # Mark difficult annotations as ignore for pr metric
         return img, anno
@@ -81,7 +83,7 @@ def VOCTest(hyper_params):
     num_det = 0
 
     for idx, (data, box) in enumerate(loader):
-        if (idx + 1) % 20 == 0: 
+        if (idx + 1) % 20 == 0:
             log.info('%d/%d' % (idx + 1, len(loader)))
         if use_cuda:
             data = data.cuda()
@@ -95,5 +97,3 @@ def VOCTest(hyper_params):
     netw, neth = network_size
     reorg_dets = voc_wrapper.reorgDetection(det, netw, neth) #, prefix)
     voc_wrapper.genResults(reorg_dets, results, nms_thresh)
-
-
