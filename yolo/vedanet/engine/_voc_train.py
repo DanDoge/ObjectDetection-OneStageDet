@@ -120,7 +120,7 @@ class VOCTrainingEngine(engine.Engine):
             self.train_loss[ii]['conf'].append(self.network.loss[ii].loss_conf.item() / self.mini_batch_size)
             if self.network.loss[ii].loss_cls is not None:
                 self.train_loss[ii]['cls'].append(self.network.loss[ii].loss_cls.item() / self.mini_batch_size)
-    
+
     def train_batch(self):
         self.optimizer.step()
         self.optimizer.zero_grad()
