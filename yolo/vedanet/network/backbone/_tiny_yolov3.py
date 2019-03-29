@@ -21,7 +21,7 @@ class TinyYolov3(nn.Module):
     """
     def __init__(self):
         """ Network initialisation """
-        super().__init__()
+        super(TinyYolov3, self).__init__()
 
         # Network
         layer_list = [

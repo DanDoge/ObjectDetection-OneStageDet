@@ -15,7 +15,7 @@ class Yolov3(YoloABC):
                  anchors=[(10,13),  (16,30),  (33,23), (30,61), (62,45), (59,119), (116,90), (156,198), (373,326)],
                  anchors_mask=[(6,7,8), (3,4,5), (0,1,2)], train_flag=1, clear=False, test_args=None):
         """ Network initialisation """
-        super().__init__()
+        super(Yolov3, self).__init__()
 
         # Parameters
         self.num_classes = num_classes
@@ -43,7 +43,7 @@ class Yolov3(YoloABC):
         middle_feats = self.backbone(x)
         features = self.head(middle_feats)
         loss_fn = loss.YoloLoss
-        
+
         self.compose(x, features, loss_fn)
 
         return features
@@ -60,6 +60,7 @@ class Yolov3(YoloABC):
         for module in mod.children():
             if isinstance(module, (nn.ModuleList, nn.Sequential, backbone.Darknet53,
                 backbone.Darknet53.custom_layers, head.Yolov3, head.Yolov3.custom_layers)):
-                yield from self.modules_recurse(module)
+                for tmp in self.modules_recurse(module):
+                    yield tmp
             else:
                 yield module

@@ -6,7 +6,7 @@ from ... import layer as vn_layer
 
 class InvertedResidual(nn.Module):
     def __init__(self, inp, oup, stride, expand_ratio):
-        super().__init__()
+        super(InvertedResidual, self).__init__()
         self.stride = stride
         assert stride in [1, 2]
 
@@ -68,23 +68,23 @@ def buildMobilenetv2(cfg, width_mult):
     #### stage 3
     s3_layer1 = vn_layer.Conv2dBatchReLU(3, input_channel, 3, 2)
     residual_setting = cfg[0]
-    s3_layer2, output_channel_stage3 = buildInvertedResBlock(residual_setting, input_channel, 
+    s3_layer2, output_channel_stage3 = buildInvertedResBlock(residual_setting, input_channel,
             width_mult)
 
 
     #### stage 4
     residual_setting = cfg[1]
-    s4_layer1, output_channel_stage4 = buildInvertedResBlock(residual_setting, output_channel_stage3, 
+    s4_layer1, output_channel_stage4 = buildInvertedResBlock(residual_setting, output_channel_stage3,
             width_mult)
 
     #### stage 5
     residual_setting = cfg[2]
-    s5_layer1, output_channel_stage5 = buildInvertedResBlock(residual_setting, output_channel_stage4, 
+    s5_layer1, output_channel_stage5 = buildInvertedResBlock(residual_setting, output_channel_stage4,
             width_mult)
 
     #### stage 6
     residual_setting = cfg[3]
-    s6_layer1, output_channel_stage6 = buildInvertedResBlock(residual_setting, output_channel_stage5, 
+    s6_layer1, output_channel_stage6 = buildInvertedResBlock(residual_setting, output_channel_stage5,
             width_mult)
     layer_list = [
         # stage 3

@@ -23,7 +23,7 @@ class Mobilenetv2(nn.Module):
     """
     def __init__(self, width_mult=1):
         """ Network initialisation """
-        super().__init__()
+        super(Mobilenetv2, self).__init__()
 
         # setting of inverted residual blocks
         cfg = [

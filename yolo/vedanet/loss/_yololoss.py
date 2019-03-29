@@ -31,13 +31,13 @@ class YoloLoss(nn.modules.loss._Loss):
         seen (int): How many images the network has already been trained on.
     """
     def __init__(self, num_classes, anchors, anchors_mask, reduction=32, seen=0, coord_scale=1.0, noobject_scale=1.0, object_scale=1.0, class_scale=1.0, thresh=0.5, head_idx=0):
-        super().__init__()
+        super(YoloLoss, self).__init__()
         self.num_classes = num_classes
         self.num_anchors = len(anchors_mask)
         self.anchor_step = len(anchors[0])
         self.anchors = torch.Tensor(anchors) / float(reduction)
         self.anchors_mask = anchors_mask
-        self.reduction = reduction      
+        self.reduction = reduction
         self.seen = seen
         self.head_idx = head_idx
 
@@ -47,7 +47,7 @@ class YoloLoss(nn.modules.loss._Loss):
         self.class_scale = class_scale
         self.thresh = thresh
 
-        self.info = {'avg_iou': 0, 'class': 0, 'obj': 0, 'no_obj': 0, 
+        self.info = {'avg_iou': 0, 'class': 0, 'obj': 0, 'no_obj': 0,
                 'recall50': 0, 'recall75': 0, 'obj_cur': 0, 'obj_all': 0,
                 'coord_xy': 0, 'coord_wh': 0}
 
@@ -89,7 +89,7 @@ class YoloLoss(nn.modules.loss._Loss):
         pred_boxes = torch.zeros(nB*nA*nH*nW, 4, dtype=torch.float, device=device)
         lin_x = torch.linspace(0, nW-1, nW).to(device).repeat(nH, 1).view(nH*nW)
         lin_y = torch.linspace(0, nH-1, nH).to(device).repeat(nW, 1).t().contiguous().view(nH*nW)
-        anchor_w = self.anchors[self.anchors_mask, 0].view(nA, 1).to(device) 
+        anchor_w = self.anchors[self.anchors_mask, 0].view(nA, 1).to(device)
         anchor_h = self.anchors[self.anchors_mask, 1].view(nA, 1).to(device)
 
         pred_boxes[:, 0] = (coord[:, :, 0].detach() + lin_x).view(-1)
@@ -126,13 +126,13 @@ class YoloLoss(nn.modules.loss._Loss):
         self.loss_coord = loss_coord_center + loss_coord_wh
 
         loss_conf_pos = 1.0 * self.object_scale * (conf_pos_mask * bce(conf, tconf)).sum()
-        loss_conf_neg = 1.0 * self.noobject_scale * (conf_neg_mask * bce(conf, tconf)).sum() 
-        self.loss_conf = loss_conf_pos +  loss_conf_neg 
+        loss_conf_neg = 1.0 * self.noobject_scale * (conf_neg_mask * bce(conf, tconf)).sum()
+        self.loss_conf = loss_conf_pos +  loss_conf_neg
 
         if nC > 1 and cls.numel() > 0:
             self.loss_cls = self.class_scale * 1.0 * ce(cls, tcls)
             cls_softmax = F.softmax(cls, 1)
-            t_ind = torch.unsqueeze(tcls, 1).expand_as(cls_softmax)      
+            t_ind = torch.unsqueeze(tcls, 1).expand_as(cls_softmax)
             class_prob = torch.gather(cls_softmax, 1, t_ind)[:, 0]
         else:
             self.loss_cls = torch.tensor(0.0, device=device)
@@ -200,7 +200,7 @@ class YoloLoss(nn.modules.loss._Loss):
             iou_gt_pred = bbox_ious(gt, cur_pred_boxes)
             mask = (iou_gt_pred > self.thresh).sum(0) >= 1
             conf_neg_mask[b][mask.view_as(conf_neg_mask[b])] = 0
-            
+
             # Find best anchor for each gt
             gt_wh = gt.clone()
             gt_wh[:, :2] = 0
@@ -231,7 +231,7 @@ class YoloLoss(nn.modules.loss._Loss):
                 else:
                     coord_mask[b][best_n][0][gj*nW+gi] = 2 - anno.width*anno.height/(nW*nH*self.reduction*self.reduction)
                     cls_mask[b][best_n][gj*nW+gi] = 1
-                    conf_pos_mask[b][best_n][gj*nW+gi] = 1 
+                    conf_pos_mask[b][best_n][gj*nW+gi] = 1
                     conf_neg_mask[b][best_n][gj*nW+gi] = 0
                     tcoord[b][best_n][0][gj*nW+gi] = gt[i, 0] - gi
                     tcoord[b][best_n][1][gj*nW+gi] = gt[i, 1] - gj
@@ -242,9 +242,9 @@ class YoloLoss(nn.modules.loss._Loss):
         # loss informaion
         self.info['obj_cur'] = obj_cur
         self.info['obj_all'] = obj_all
-        if obj_cur == 0: 
+        if obj_cur == 0:
             obj_cur = 1
-        self.info['avg_iou'] = iou_sum / obj_cur 
+        self.info['avg_iou'] = iou_sum / obj_cur
         self.info['recall50'] = recall50 / obj_cur
         self.info['recall75'] = recall75 / obj_cur
 
@@ -260,7 +260,6 @@ class YoloLoss(nn.modules.loss._Loss):
         log.info('Head %d\n%s' % (self.head_idx, info_str))
 
         # reset
-        self.info = {'avg_iou': 0, 'class': 0, 'obj': 0, 'no_obj': 0, 
+        self.info = {'avg_iou': 0, 'class': 0, 'obj': 0, 'no_obj': 0,
                 'recall50': 0, 'recall75': 0, 'obj_cur': 0, 'obj_all': 0,
                 'coord_xy': 0, 'coord_wh': 0}
-

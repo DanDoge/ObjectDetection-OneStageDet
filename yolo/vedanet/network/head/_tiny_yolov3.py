@@ -12,7 +12,7 @@ class TinyYolov3(nn.Module):
     custom_layers = ()
     def __init__(self, num_classes, num_anchors_list):
         """ Network initialisation """
-        super().__init__()
+        super(TinyYolov3, self).__init__()
         layer_list = [
             # stage 6
             OrderedDict([

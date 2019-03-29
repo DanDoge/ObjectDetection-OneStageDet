@@ -33,7 +33,7 @@ class Lightnet(nn.Module):
         whenever the network is training.
     """
     def __init__(self):
-        super().__init__()
+        super(Lightnet, self).__init__()
 
         # Parameters
         self.layers = None
@@ -51,7 +51,7 @@ class Lightnet(nn.Module):
                 x = module(x)
             return x
         else:
-            raise NotImplementedError(f'No _forward function defined and no default behaviour for this type of layers [{type(self.layers)}]')
+            raise NotImplementedError('No _forward function defined and no default behaviour for this type of layers [{}]'.format(type(self.layers)))
 
     def forward(self, x, target=None):
         """ This default forward function will compute the output of the network as ``self._forward(x)``.
@@ -71,7 +71,7 @@ class Lightnet(nn.Module):
             t1 = time.time()
             outputs = self._forward(x)
             t2 = time.time()
-            
+
             assert len(outputs) == len(self.loss)
 
             loss = 0
@@ -122,7 +122,8 @@ class Lightnet(nn.Module):
 
         for module in mod.children():
             if isinstance(module, (nn.ModuleList, nn.Sequential)):
-                yield from self.modules_recurse(module)
+                for tmp in self.modules_recurse(module):
+                    yield tmp
             else:
                 yield module
 
@@ -175,7 +176,7 @@ class Lightnet(nn.Module):
         if hasattr(self.loss, 'seen'):
             self.loss.seen = self.seen
 
-        log.info(f'Loaded weights from {weights_file}')
+        log.info('Loaded weights from {}'.format(weights_file))
 
     def save_weights(self, weights_file, seen=None):
         """ This function will save the weights to a file.
@@ -193,4 +194,4 @@ class Lightnet(nn.Module):
         }
         torch.save(state, weights_file)
 
-        log.info(f'Saved weights as {weights_file}')
+        log.info('Saved weights as {}'.format(weights_file))

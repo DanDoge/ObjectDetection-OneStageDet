@@ -22,7 +22,7 @@ class Darknet53(nn.Module):
     custom_layers = (bdkn.Stage, bdkn.HeadBody, bdkn.Transition,
                     bdkn.Stage.custom_layers, bdkn.HeadBody.custom_layers, bdkn.Transition.custom_layers)
     def __init__(self):
-        super().__init__()
+        super(Darknet53, self).__init__()
 
         input_channels = 32
         stage_cfg = {'stage_2': 2, 'stage_3': 3, 'stage_4': 9, 'stage_5': 9, 'stage_6': 5}
@@ -103,5 +103,4 @@ class Darknet53(nn.Module):
         # stage 6, stage 5, stage 4
         features = [head_body_1, head_body_2, head_body_3]
 
-        return features 
-
+        return features

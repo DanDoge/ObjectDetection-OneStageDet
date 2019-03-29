@@ -13,7 +13,7 @@ class Block(nn.Module):
     '''
     '''
     def __init__(self, in_channels, out_channels):
-        super().__init__()
+        super(Block, self).__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
 
@@ -42,7 +42,7 @@ class Stage(nn.Module):
     '''
     '''
     def __init__(self, in_channels, out_channels, repeat_times):
-        super().__init__()
+        super(Stage, self).__init__()
         layer_list = []
 
         if repeat_times >= 1:
@@ -56,5 +56,3 @@ class Stage(nn.Module):
     def forward(self, x):
         out = self.layer(x)
         return out
-
-

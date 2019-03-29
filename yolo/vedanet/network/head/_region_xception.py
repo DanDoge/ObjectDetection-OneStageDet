@@ -11,7 +11,7 @@ __all__ = ['RegionXception']
 class RegionXception(nn.Module):
     def __init__(self, num_anchors, num_classes):
         """ Network initialisation """
-        super().__init__()
+        super(RegionXception, self).__init__()
         layer_list = [
             # Sequence 2 : input = sequence0
             OrderedDict([

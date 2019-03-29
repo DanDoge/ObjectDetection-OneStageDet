@@ -5,7 +5,7 @@
 from enum import Enum
 
 from .. import box as b
-from ..annotations import annotation as anno
+#from ..annotations import annotation as anno
 
 __all__ = ['Detection', 'ParserType', 'Parser']
 
@@ -40,29 +40,29 @@ class Detection(b.Box):
 
         if isinstance(obj, Detection):
             instance.confidence = obj.confidence
-        elif isinstance(obj, anno.Annotation):
+        else:
             instance.confidence = 1.0
 
         return instance
 
     def __repr__(self):
         """ Unambiguous representation """
-        string = f'{self.__class__.__name__} ' + '{'
-        string += f'class_label = {self.class_label}, '
-        string += f'object_id = {self.object_id}, '
-        string += f'x = {self.x_top_left}, '
-        string += f'y = {self.y_top_left}, '
-        string += f'w = {self.width}, '
-        string += f'h = {self.height}, '
-        string += f'confidence = {self.confidence}'
+        string = '{} '.format(self.__class__.__name__) + '{'
+        string += 'class_label = \'{}\', '.format(self.class_label)
+        string += 'object_id = {}, '.format(self.object_id)
+        string += 'x = {}, '.format(self.x_top_left)
+        string += 'y = {}, '.format(self.y_top_left)
+        string += 'w = {}, '.format(self.width)
+        string += 'h = {}, '.format(self.height)
+        string += 'confidence = {}'.format(self.confidence)
         return string + '}'
 
     def __str__(self):
         """ Pretty print """
         string = 'Detection {'
-        string += f'\'{self.class_label}\' {self.object_id}, '
-        string += f'[{int(self.x_top_left)}, {int(self.y_top_left)}, {int(self.width)}, {int(self.height)}]'
-        string += f', {round(self.confidence*100, 2)} %'
+        string += '\'{}\' {}, '.format(self.class_label, self.object_id)
+        string += '[{}, {}, {}, {}]'.format(int(self.x_top_left), int(self.y_top_left), int(self.width), int(self.height))
+        string += ', {} %'.format(round(self.confidence*100, 2))
         return string + '}'
 
 

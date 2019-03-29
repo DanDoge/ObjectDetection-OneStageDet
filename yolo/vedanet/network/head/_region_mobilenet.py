@@ -11,7 +11,7 @@ __all__ = ['RegionMobilenet']
 class RegionMobilenet(nn.Module):
     def __init__(self, num_anchors, num_classes, input_channels=48):
         """ Network initialisation """
-        super().__init__()
+        super(RegionMobilenet, self).__init__()
         layer_list = [
             # Sequence 2 : input = sequence0
             OrderedDict([

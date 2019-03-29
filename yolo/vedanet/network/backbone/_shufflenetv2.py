@@ -11,7 +11,7 @@ __all__ = ['shufflenetv2']
 # default shufflenetv2 1x
 class Shufflenetv2(nn.Module):
     def __init__(self, cfg):
-        super().__init__()
+        super(Shufflenetv2, self).__init__()
 
         out_planes = cfg['out_channels']
         num_blocks = cfg['num_blocks']

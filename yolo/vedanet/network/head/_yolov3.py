@@ -13,7 +13,7 @@ class Yolov3(nn.Module):
     custom_layers = (byolov3.Head, byolov3.Head.custom_layers)
     def __init__(self, num_classes, in_channels_list, num_anchors_list):
         """ Network initialisation """
-        super().__init__()
+        super(Yolov3, self).__init__()
         layer_list = [
             # stage 6, largest
             OrderedDict([

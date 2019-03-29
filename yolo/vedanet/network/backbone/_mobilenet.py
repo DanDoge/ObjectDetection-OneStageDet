@@ -14,7 +14,7 @@ class Mobilenet(nn.Module):
     """
     def __init__(self, alpha=1):
         """ Network initialisation """
-        super().__init__()
+        super(Mobilenet, self).__init__()
 
         # Network
         layer_list = [

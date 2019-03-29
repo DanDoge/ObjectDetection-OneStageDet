@@ -16,7 +16,7 @@ class Xception(nn.Module):
     """
     def __init__(self):
         """ Network initialisation """
-        super().__init__()
+        super(Xception, self).__init__()
 
         layers_list = [
             # Sequence 0 : input = image tensor

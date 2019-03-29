@@ -12,7 +12,7 @@ __all__ = ['LightXception']
 class LightXception(nn.Module):
     def __init__(self):
         """ Network initialisation """
-        super().__init__()
+        super(LightXception, self).__init__()
 
         # Network
         layers_list= [

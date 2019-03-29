@@ -1,3 +1,5 @@
+# coding: utf-8
+
 #
 #   Darknet related layers
 #   Copyright EAVISE
@@ -61,7 +63,7 @@ class Conv2dBatchLeaky(nn.Module):
 
 class Conv2dBatchPPReLU(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size, stride):
-        super().__init__()
+        super(Conv2dBatchPPReLU, self).__init__()
 
         # Parameters
         self.in_channels = in_channels
@@ -91,7 +93,7 @@ class Conv2dBatchPPReLU(nn.Module):
 
 class Conv2dBatchPReLU(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size, stride):
-        super().__init__()
+        super(Conv2dBatchPReLU, self).__init__()
 
         # Parameters
         self.in_channels = in_channels
@@ -121,7 +123,7 @@ class Conv2dBatchPReLU(nn.Module):
 
 class Conv2dBatchPLU(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size, stride):
-        super().__init__()
+        super(Conv2dBatchPLU, self).__init__()
 
         # Parameters
         self.in_channels = in_channels
@@ -151,7 +153,7 @@ class Conv2dBatchPLU(nn.Module):
 
 class Conv2dBatchELU(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size, stride):
-        super().__init__()
+        super(Conv2dBatchELU, self).__init__()
 
         # Parameters
         self.in_channels = in_channels
@@ -182,7 +184,7 @@ class Conv2dBatchELU(nn.Module):
 
 class Conv2dBatchSELU(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size, stride):
-        super().__init__()
+        super(Conv2dBatchSELU, self).__init__()
 
         # Parameters
         self.in_channels = in_channels
@@ -223,7 +225,7 @@ class Conv2dBatch(nn.Module):
         leaky_slope (number, optional): Controls the angle of the negative slope of the leaky ReLU; Default **0.1**
     """
     def __init__(self, in_channels, out_channels, kernel_size, stride, leaky_slope=0.1):
-        super().__init__()
+        super(Conv2dBatch, self).__init__()
 
         # Parameters
         self.in_channels = in_channels
@@ -284,7 +286,7 @@ class PaddedMaxPool2d(nn.Module):
         self.dilation = dilation
 
     def __repr__(self):
-        return f'{self.__class__.__name__} (kernel_size={self.kernel_size}, stride={self.stride}, padding={self.padding}, dilation={self.dilation})'
+        return '{} (kernel_size={}, stride={}, padding={}, dilation={})'.format(self.__class__.__name__, self.kernel_size, self.stride, self.padding, self.dilation)
 
     def forward(self, x):
         x = F.max_pool2d(F.pad(x, self.padding, mode='replicate'), self.kernel_size, self.stride, 0, self.dilation)
@@ -301,12 +303,12 @@ class Reorg(nn.Module):
     def __init__(self, stride=2):
         super(Reorg, self).__init__()
         if not isinstance(stride, int):
-            raise TypeError(f'stride is not an int [{type(stride)}]')
+            raise TypeError('stride is not an int [{}]'.format(type(stride)))
         self.stride = stride
         self.darknet = True
 
     def __repr__(self):
-        return f'{self.__class__.__name__} (stride={self.stride}, darknet_compatible_mode={self.darknet})'
+        return '{} (stride={}, darknet_compatible_mode={})'.format(self.__class__.__name__, self.stride, self.darknet)
 
     def forward(self, x):
         assert(x.data.dim() == 4)
@@ -316,9 +318,9 @@ class Reorg(nn.Module):
         W = x.data.size(3)
 
         if H % self.stride != 0:
-            raise ValueError(f'Dimension mismatch: {H} is not divisible by {self.stride}')
+            raise ValueError('Dimension mismatch: {} is not divisible by {}'.format(H, self.stride))
         if W % self.stride != 0:
-            raise ValueError(f'Dimension mismatch: {W} is not divisible by {self.stride}')
+            raise ValueError('Dimension mismatch: {} is not divisible by {}'.format(W, self.stride))
 
         # darknet compatible version from: https://github.com/thtrieu/darkflow/issues/173#issuecomment-296048648
         if self.darknet:
@@ -361,7 +363,7 @@ class SELayer(nn.Module):
 
 class Scale(nn.Module):
     def __init__(self, nchannels, bias=True, init_scale=1.0):
-        super().__init__()
+        super(Scale, self).__init__()
         # nn.Parameter is a special kind of Tensor, that will get
         # automatically registered as Module's parameter once it's assigned
         # as an attribute. Parameters and buffers need to be registered, or
@@ -400,8 +402,8 @@ class Scale(nn.Module):
 
 class ScaleReLU(nn.Module):
     def __init__(self, nchannels):
-        super().__init__()
-        self.scale = Scale(nchannels) 
+        super(ScaleReLU, self).__init__()
+        self.scale = Scale(nchannels)
         self.relu = nn.ReLU(inplace=True)
         self.nchannels = nchannels
 
@@ -417,9 +419,9 @@ class ScaleReLU(nn.Module):
 
 class PPReLU(nn.Module):
     def __init__(self, nchannels):
-        super().__init__()
-        self.scale1 = Scale(nchannels, bias=False, init_scale=1.0) 
-        self.scale2 = Scale(nchannels, bias=False, init_scale=0.1) 
+        super(PPReLU, self).__init__()
+        self.scale1 = Scale(nchannels, bias=False, init_scale=1.0)
+        self.scale2 = Scale(nchannels, bias=False, init_scale=0.1)
         self.nchannels = nchannels
 
     def forward(self, x):
@@ -439,7 +441,7 @@ class PLU(nn.Module):
     from PLU: The Piecewise Linear Unit Activation Function
     """
     def __init__(self, alpha=0.1, c=1):
-        super().__init__()
+        super(PLU, self).__init__()
         self.alpha = alpha
         self.c = c
 
@@ -457,8 +459,8 @@ class PLU(nn.Module):
 
 class CReLU(nn.Module):
     def __init__(self, nchannels):
-        super().__init__()
-        self.scale = Scale(2*nchannels) 
+        super(CReLU, self).__init__()
+        self.scale = Scale(2*nchannels)
         self.relu = nn.ReLU(inplace=True)
         self.in_channels = nchannels
         self.out_channels = 2*nchannels
@@ -476,8 +478,8 @@ class CReLU(nn.Module):
 
 class L2Norm(nn.Module):
     def __init__(self, nchannels, bias=True):
-        super().__init__()
-        self.scale = Scale(nchannels, bias=bias) 
+        super(L2Norm, self).__init__()
+        self.scale = Scale(nchannels, bias=bias)
         self.nchannels = nchannels
         self.eps = 1e-6
 
@@ -507,7 +509,7 @@ class Conv2dL2NormLeaky(nn.Module):
         leaky_slope (number, optional): Controls the angle of the negative slope of the leaky ReLU; Default **0.1**
     """
     def __init__(self, in_channels, out_channels, kernel_size, stride, leaky_slope=0.1, bias=True):
-        super().__init__()
+        super(Conv2dL2NormLeaky, self).__init__()
 
         # Parameters
         self.in_channels = in_channels
@@ -539,7 +541,7 @@ class Conv2dL2NormLeaky(nn.Module):
 ## shufflenet
 class Shuffle(nn.Module):
     def __init__(self, groups):
-        super().__init__()
+        super(Shuffle, self).__init__()
         self.groups = groups
 
     def forward(self, x):
@@ -593,5 +595,3 @@ class Conv2dBatchReLU(nn.Module):
     def forward(self, x):
         x = self.layers(x)
         return x
-
-

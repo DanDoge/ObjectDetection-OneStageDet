@@ -11,7 +11,7 @@ __all__ = ['TinyYolov2']
 class TinyYolov2(nn.Module):
     def __init__(self, num_anchors, num_classes):
         """ Network initialisation """
-        super().__init__()
+        super(TinyYolov2, self).__init__()
         layer_list = [
             OrderedDict([
                 ('14_convbatch',    vn_layer.Conv2dBatchLeaky(1024, 1024, 3, 1)),

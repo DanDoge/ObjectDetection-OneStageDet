@@ -7,7 +7,7 @@ class SeparableConv2d(nn.Module):
     """
     """
     def __init__(self, in_channels, out_channels, kernel_size, stride, relu_in_middle=True):
-        super().__init__()
+        super(SeparableConv2d, self).__init__()
 
         # Parameters
         self.in_channels = in_channels
@@ -52,9 +52,9 @@ class SeparableConv2d(nn.Module):
 
 class MiniBlock(nn.Module):
     def __init__(self, in_channels, out_channels, stride, separable_conv_num, start_with_relu=True):
-        super().__init__()
+        super(MiniBlock, self).__init__()
         layer_list = []
-        
+
         # start
         if start_with_relu:
             layer_list.append(nn.ReLU(inplace=True))
@@ -83,7 +83,7 @@ class MiniBlock(nn.Module):
 
 class Block(nn.Module):
     def __init__(self, in_channels, out_channels, block_layer, repeat):
-        super().__init__()
+        super(Block, self).__init__()
         layer_list = []
         layer_list.append(MiniBlock(in_channels, out_channels, 1, block_layer))
         for idx in range(repeat - 1):

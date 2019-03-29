@@ -16,7 +16,7 @@ __all__ = ['YoloABC']
 class YoloABC(Darknet):
     def __init__(self):
         """ Network initialisation """
-        super().__init__()
+        super(YoloABC, self).__init__()
 
         # Parameters
         self.num_classes = None
@@ -30,7 +30,7 @@ class YoloABC(Darknet):
 
         # Network
         # backbone
-        #self.backbone = backbone() 
+        #self.backbone = backbone()
         # head
         #self.head = head()
 

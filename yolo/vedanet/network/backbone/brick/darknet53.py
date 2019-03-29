@@ -9,7 +9,7 @@ from ... import layer as vn_layer
 class StageBlock(nn.Module):
     custom_layers = ()
     def __init__(self, nchannels):
-        super().__init__()
+        super(StageBlock, self).__init__()
         self.features = nn.Sequential(
                     vn_layer.Conv2dBatchLeaky(nchannels, int(nchannels/2), 1, 1),
                     vn_layer.Conv2dBatchLeaky(int(nchannels/2), nchannels, 3, 1)
@@ -22,7 +22,7 @@ class StageBlock(nn.Module):
 class Stage(nn.Module):
     custom_layers = (StageBlock, StageBlock.custom_layers)
     def __init__(self, nchannels, nblocks, stride=2):
-        super().__init__()
+        super(Stage, self).__init__()
         blocks = []
         blocks.append(vn_layer.Conv2dBatchLeaky(nchannels, 2*nchannels, 3, stride))
         for ii in range(nblocks - 1):
@@ -36,7 +36,7 @@ class Stage(nn.Module):
 class HeadBody(nn.Module):
     custom_layers = ()
     def __init__(self, nchannels, first_head=False):
-        super().__init__()
+        super(HeadBody, self).__init__()
         if first_head:
             half_nchannels = int(nchannels/2)
         else:
@@ -59,7 +59,7 @@ class HeadBody(nn.Module):
 class Transition(nn.Module):
     custom_layers = ()
     def __init__(self, nchannels):
-        super().__init__()
+        super(Transition, self).__init__()
         half_nchannels = int(nchannels/2)
         layers = [
                 vn_layer.Conv2dBatchLeaky(nchannels, half_nchannels, 1, 1),
@@ -71,4 +71,3 @@ class Transition(nn.Module):
     def forward(self, data):
         x = self.features(data)
         return x
-

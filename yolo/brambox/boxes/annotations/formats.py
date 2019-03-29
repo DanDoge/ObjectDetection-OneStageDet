@@ -7,7 +7,7 @@ from .darknet import DarknetParser
 from .dollar import DollarParser
 from .kitti import KittiParser
 from .pascalvoc import PascalVocParser
-from .pickle import PickleParser
+from .pickle_file import PickleParser
 from .vatic import VaticParser
 from .yaml import YamlParser
 

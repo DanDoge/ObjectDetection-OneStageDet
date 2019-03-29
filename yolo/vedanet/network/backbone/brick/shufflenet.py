@@ -11,7 +11,7 @@ from ... import layer as vn_layer
 
 class Block(nn.Module):
     def __init__(self, in_planes, out_planes, stride, groups):
-        super().__init__()
+        super(Block, self).__init__()
         self.stride = stride
 
         mid_planes = int(out_planes / 4)
@@ -46,7 +46,7 @@ class Block(nn.Module):
 
 class Stage(nn.Module):
     def __init__(self, in_planes, out_planes, groups, num_blocks):
-        super().__init__()
+        super(Stage, self).__init__()
         layer_list = []
         for i in range(num_blocks):
             stride = 2 if i == 0 else 1
@@ -57,5 +57,3 @@ class Stage(nn.Module):
 
     def forward(self, x):
         return self.layers(x)
-
-

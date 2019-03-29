@@ -16,12 +16,12 @@ class Squeezenext(nn.Module):
     """
     def __init__(self, width_mul=1):
         """ Network initialisation """
-        super().__init__()
-        
+        super(Squeezenext, self).__init__()
 
-        sqz_chns = [3, 64, 
+
+        sqz_chns = [3, 64,
                         32*width_mul, 64*width_mul, 128*width_mul, 256*width_mul]
-        sqz_stage_cfg = [None, None, 
+        sqz_stage_cfg = [None, None,
                         2, 4, 14, 1]
 
         # Network

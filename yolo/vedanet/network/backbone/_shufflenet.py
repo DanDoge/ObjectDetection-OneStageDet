@@ -11,7 +11,7 @@ __all__ = ['shufflenetg2', 'shufflenetg3']
 # default shufflenet g2
 class Shufflenet(nn.Module):
     def __init__(self, cfg):
-        super().__init__()
+        super(Shufflenet, self).__init__()
         out_planes = cfg['out_planes']
         num_blocks = cfg['num_blocks']
         groups = cfg['groups']

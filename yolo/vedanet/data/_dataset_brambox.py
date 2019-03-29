@@ -29,7 +29,7 @@ class BramboxDataset(Dataset):
         kwargs (dict): Keyword arguments that are passed to the brambox parser
     """
     def __init__(self, anno_format, anno_filename, input_dimension, class_label_map=None, identify=None, img_transform=None, anno_transform=None, **kwargs):
-        super().__init__(input_dimension)
+        super(BramboxDataset, self).__init__(input_dimension)
         self.img_tf = img_transform
         self.anno_tf = anno_transform
         if callable(identify):
@@ -47,18 +47,18 @@ class BramboxDataset(Dataset):
 
         # Add class_ids
         if class_label_map is None:
-            log.warn(f'No class_label_map given, annotations wont have a class_id values for eg. loss function')
+            log.warn('No class_label_map given, annotations wont have a class_id values for eg. loss function')
         for k, annos in self.annos.items():
             for a in annos:
                 if class_label_map is not None:
                     try:
                         a.class_id = class_label_map.index(a.class_label)
-                    except ValueError as err:
-                        raise ValueError(f'{a.class_label} is not found in the class_label_map') from err
+                    except ValueError: #as err:
+                        raise ValueError('{} is not found in the class_label_map'.format(a.class_label)) #from err
                 else:
                     a.class_id = 0
 
-        log.info(f'Dataset loaded: {len(self.keys)} images')
+        log.info('Dataset loaded: {} images'.format(len(self.keys)))
 
     def __len__(self):
         return len(self.keys)
@@ -74,7 +74,7 @@ class BramboxDataset(Dataset):
             tuple: (transformed image, list of transformed brambox boxes)
         """
         if index >= len(self):
-            raise IndexError(f'list index out of range [{index}/{len(self)-1}]')
+            raise IndexError('list index out of range [{}}/{}]'.format(index, len(self)-1))
 
         # Load
         img = Image.open(self.id(self.keys[index]))

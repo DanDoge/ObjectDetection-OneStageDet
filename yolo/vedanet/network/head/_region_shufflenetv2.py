@@ -11,7 +11,7 @@ __all__ = ['RegionShufflenetv2']
 class RegionShufflenetv2(nn.Module):
     def __init__(self, num_anchors, num_classes, input_channels=48):
         """ Network initialisation """
-        super().__init__()
+        super(RegionShufflenetv2, self).__init__()
         layer_list = [
             # Sequence 2 : input = sequence0
             OrderedDict([

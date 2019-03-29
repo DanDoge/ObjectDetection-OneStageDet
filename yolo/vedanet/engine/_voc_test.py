@@ -25,7 +25,7 @@ class CustomDataset(vn_data.BramboxDataset):
         anno_tf = vn_data.transform.Compose([lb])
 
         def identify(img_id):
-            return f'{img_id}'
+            return '{}'.format(img_id)
 
         super(CustomDataset, self).__init__('anno_pickle', anno, network_size, labels, identify, img_tf, anno_tf)
 

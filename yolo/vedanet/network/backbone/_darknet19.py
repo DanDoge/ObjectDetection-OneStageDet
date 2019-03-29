@@ -34,7 +34,7 @@ class Darknet19(nn.Module):
     """
     def __init__(self):
         """ Network initialisation """
-        super().__init__()
+        super(Darknet19, self).__init__()
 
         # Network
         layer_list = [

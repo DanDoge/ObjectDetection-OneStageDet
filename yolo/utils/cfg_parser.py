@@ -15,7 +15,7 @@ def getConfig(cfgs_root, model_name):
     #model_name = main_cfg['model']
     if model_name not in main_cfg['cfg_dict'].keys():
         models = ', '.join(main_cfg['cfg_dict'].keys())
-        print('There are models like %s\n' % models, file=sys.stderr)
+        print('There are models like %s\n' % models)#, file=sys.stderr)
         raise Exception
     cfg_fp = './' + cfgs_root + '/' + main_cfg['cfg_dict'][model_name]
     config =  parse(cfg_fp)

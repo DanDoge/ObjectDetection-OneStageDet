@@ -24,7 +24,7 @@ class Dataset(torchDataset):
         input_dimension (tuple): (width,height) tuple with default dimensions of the network
     """
     def __init__(self, input_dimension):
-        super().__init__()
+        super(Dataset, self).__init__()
         self.__input_dim = input_dimension[:2]
 
     @property
@@ -111,7 +111,7 @@ class DataLoader(torchDataLoader):
         [[(480, 320), (480, 320)]]
         [[(480, 320), (480, 320)]]
     """
-    def __init__(self, *args, resize_range=(10, 19), **kwargs):
+    def __init__(self, *args, **kwargs):
         super(DataLoader, self).__init__(*args, **kwargs)
         self.__initialized = False
         shuffle = False
@@ -147,7 +147,7 @@ class DataLoader(torchDataLoader):
                     sampler = torch.utils.data.sampler.RandomSampler(self.dataset)
                 else:
                     sampler = torch.utils.data.sampler.SequentialSampler(self.dataset)
-            batch_sampler = BatchSampler(sampler, self.batch_size, self.drop_last, input_dimension=self.dataset.input_dim)
+            batch_sampler = BatchSampler(self.dataset.input_dim, sampler, self.batch_size, self.drop_last)
 
         self.sampler = sampler
         self.batch_sampler = batch_sampler
@@ -187,7 +187,7 @@ class BatchSampler(torchBatchSampler):
     It works just like the :class:`torch.utils.data.sampler.BatchSampler`, but it will prepend a dimension,
     whilst ensuring it stays the same across one mini-batch.
     """
-    def __init__(self, *args, input_dimension=None, **kwargs):
+    def __init__(self, input_dimension=None, *args, **kwargs):
         super(BatchSampler, self).__init__(*args, **kwargs)
         self.input_dim = input_dimension
         self.new_input_dim = None
@@ -201,7 +201,7 @@ class BatchSampler(torchBatchSampler):
     def __set_input_dim(self):
         """ This function randomly changes the the input dimension of the dataset. """
         if self.new_input_dim is not None:
-            log.info(f'Resizing network {self.new_input_dim[:2]}')
+            log.info('Resizing network {}'.format(self.new_input_dim[:2]))
             self.input_dim = (self.new_input_dim[0], self.new_input_dim[1])
             self.new_input_dim = None
 

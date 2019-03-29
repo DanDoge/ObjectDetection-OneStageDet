@@ -59,4 +59,4 @@ class DarknetDataset(BramboxDataset):
         w, h = first_img.size
         kwargs = {'image_width': w, 'image_height': h}
 
-        super().__init__(anno_format, self.anno_paths, input_dimension, class_label_map,  identify, img_tf, anno_tf, **kwargs)
+        super(DarknetDataset, self).__init__(anno_format, self.anno_paths, input_dimension, class_label_map,  identify, img_tf, anno_tf, **kwargs)

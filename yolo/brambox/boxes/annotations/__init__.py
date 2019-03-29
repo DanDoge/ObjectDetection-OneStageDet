@@ -9,7 +9,7 @@ from .darknet import *
 from .dollar import *
 from .kitti import *
 from .pascalvoc import *
-from .pickle import *
+from .pickle_file import *
 from .vatic import *
 from .yaml import *
 

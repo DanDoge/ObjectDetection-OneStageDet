@@ -11,7 +11,7 @@ from ... import layer as vn_layer
 
 class Split(nn.Module):
     def __init__(self, ratio):
-        super().__init__()
+        super(Split, self).__init__()
         self.ratio = ratio
 
     def forward(self, x):
@@ -21,7 +21,7 @@ class Split(nn.Module):
 
 class BasicBlock(nn.Module):
     def __init__(self, in_channels, split_ratio=0.5, groups=2):
-        super().__init__()
+        super(BasicBlock, self).__init__()
         in_channels = int(in_channels * split_ratio)
 
         layer_list = [
@@ -45,7 +45,7 @@ class BasicBlock(nn.Module):
 
 class DownBlock(nn.Module):
     def __init__(self, in_channels, out_channels, groups=2):
-        super().__init__()
+        super(DownBlock, self).__init__()
         mid_channels = out_channels // 2
         # left
         left_list = [
@@ -76,7 +76,7 @@ class DownBlock(nn.Module):
 
 class Stage(nn.Module):
     def __init__(self, in_channels, out_channels, groups, num_blocks):
-        super().__init__()
+        super(Stage, self).__init__()
         layer_list = [DownBlock(in_channels, out_channels)]
         for i in range(num_blocks):
             layer_list.append(BasicBlock(out_channels))
@@ -86,4 +86,3 @@ class Stage(nn.Module):
 
     def forward(self, x):
         return self.layers(x)
-

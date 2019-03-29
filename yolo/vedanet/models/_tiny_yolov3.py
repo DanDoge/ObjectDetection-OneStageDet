@@ -12,10 +12,10 @@ __all__ = ['TinyYolov3']
 
 class TinyYolov3(YoloABC):
     def __init__(self, num_classes=20, weights_file=None, input_channels=3,
-                 anchors=[(10,14),  (23,27),  (37,58),  (81,82),  (135,169),  (344,319)], 
+                 anchors=[(10,14),  (23,27),  (37,58),  (81,82),  (135,169),  (344,319)],
                  anchors_mask=[(3,4,5), (0,1,2)], train_flag=1, clear=False, test_args=None):
         """ Network initialisation """
-        super().__init__()
+        super(TinyYolov3, self).__init__()
 
         # Parameters
         self.num_classes = num_classes
@@ -42,7 +42,7 @@ class TinyYolov3(YoloABC):
         middle_feats = self.backbone(x)
         features = self.head(middle_feats)
         loss_fn = loss.YoloLoss
-        
+
         self.compose(x, features, loss_fn)
 
         return features
@@ -59,6 +59,7 @@ class TinyYolov3(YoloABC):
         for module in mod.children():
             if isinstance(module, (nn.ModuleList, nn.Sequential, backbone.Darknet53,
                 backbone.Darknet53.custom_layers, head.Yolov3, head.Yolov3.custom_layers)):
-                yield from self.modules_recurse(module)
+                for tmp in self.modules_recurse(module):
+                    yield tmp
             else:
                 yield module

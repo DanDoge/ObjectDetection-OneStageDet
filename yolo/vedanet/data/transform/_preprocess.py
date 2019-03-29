@@ -37,7 +37,7 @@ class Letterbox(BaseMultiTransform):
         This object will save data from the image transform and use that on the annotation transform.
     """
     def __init__(self, dimension=None, dataset=None):
-        super().__init__(dimension=dimension, dataset=dataset)
+        super(Letterbox, self).__init__(dimension=dimension, dataset=dataset)
         if self.dimension is None and self.dataset is None:
             raise ValueError('This transform either requires a dimension or a dataset to infer the dimension')
 
@@ -55,7 +55,7 @@ class Letterbox(BaseMultiTransform):
         elif isinstance(data, np.ndarray):
             return self._tf_cv(data)
         else:
-            log.error(f'Letterbox only works with <brambox annotation lists>, <PIL images> or <OpenCV images> [{type(data)}]')
+            log.error('Letterbox only works with <brambox annotation lists>, <PIL images> or <OpenCV images> [{}]'.format(type(data)))
             return data
 
     def _tf_pil(self, img):
@@ -155,7 +155,7 @@ class RandomCrop(BaseMultiTransform):
         This object will save data from the image transform and use that on the annotation transform.
     """
     def __init__(self, jitter, crop_anno=False, intersection_threshold=0.001, fill_color=127):
-        super().__init__(jitter=jitter, crop_anno=crop_anno, fill_color=fill_color)
+        super(RandomCrop, self).__init__(jitter=jitter, crop_anno=crop_anno, fill_color=fill_color)
         self.crop_modifier = bbb.CropModifier(float('Inf'), intersection_threshold)
 
     def __call__(self, data):
@@ -168,7 +168,7 @@ class RandomCrop(BaseMultiTransform):
         elif isinstance(data, np.ndarray):
             return self._tf_cv(data)
         else:
-            log.error(f'RandomCrop only works with <brambox annotation lists>, <PIL images> or <OpenCV images> [{type(data)}]')
+            log.error('RandomCrop only works with <brambox annotation lists>, <PIL images> or <OpenCV images> [{}]'.format(type(data)))
             return data
 
     def _tf_pil(self, img):
@@ -260,7 +260,7 @@ class RandomCropLetterbox(BaseMultiTransform):
         This object will save data from the image transform and use that on the annotation transform.
     """
     def __init__(self, dataset, jitter, fill_color=127):
-        super().__init__(dataset=dataset, jitter=jitter, fill_color=fill_color)
+        super(RandomCropLetterbox, self).__init__(dataset=dataset, jitter=jitter, fill_color=fill_color)
         self.crop_info = None
         self.output_w = None
         self.output_h = None
@@ -273,7 +273,7 @@ class RandomCropLetterbox(BaseMultiTransform):
         elif isinstance(data, Image.Image):
             return self._tf_pil(data)
         else:
-            log.error(f'RandomCrop only works with <brambox annotation lists>, <PIL images> or <OpenCV images> [{type(data)}]')
+            log.error('RandomCrop only works with <brambox annotation lists>, <PIL images> or <OpenCV images> [{}]'.format(type(data)))
             return data
 
     def _tf_pil(self, img):
@@ -354,6 +354,7 @@ class RandomFlip(BaseMultiTransform):
         This object will save data from the image transform and use that on the annotation transform.
     """
     def __init__(self, threshold):
+        super(RandomFlip, self).__init__()
         self.threshold = threshold
         self.flip = False
         self.im_w = None
@@ -368,7 +369,7 @@ class RandomFlip(BaseMultiTransform):
         elif isinstance(data, np.ndarray):
             return self._tf_cv(data)
         else:
-            log.error(f'RandomFlip only works with <brambox annotation lists>, <PIL images> or <OpenCV images> [{type(data)}]')
+            log.error('RandomFlip only works with <brambox annotation lists>, <PIL images> or <OpenCV images> [{}]'.format(type(data)))
             return data
 
     def _tf_pil(self, img):
@@ -412,7 +413,7 @@ class HSVShift(BaseTransform):
     .. _cvtColor: https://docs.opencv.org/master/d7/d1b/group__imgproc__misc.html#ga397ae87e1288a81d2363b61574eb8cab
     """
     def __init__(self, hue, saturation, value):
-        super().__init__(hue=hue, saturation=saturation, value=value)
+        super(HSVShift, self).__init__(hue=hue, saturation=saturation, value=value)
 
     @classmethod
     def apply(cls, data, hue, saturation, value):
@@ -431,7 +432,7 @@ class HSVShift(BaseTransform):
         elif isinstance(data, np.ndarray):
             return cls._tf_cv(data, dh, ds, dv)
         else:
-            log.error(f'HSVShift only works with <PIL images> or <OpenCV images> [{type(data)}]')
+            log.error('HSVShift only works with <PIL images> or <OpenCV images> [{}]'.format(type(data)))
             return data
 
     @staticmethod
@@ -492,7 +493,7 @@ class BramboxToTensor(BaseTransform):
         If no class_label_map is given, this function will first try to convert the class_label to an integer. If that fails, it is simply given the number 0.
     """
     def __init__(self, dimension=None, dataset=None, max_anno=50, class_label_map=None):
-        super().__init__(dimension=dimension, dataset=dataset, max_anno=max_anno, class_label_map=class_label_map)
+        super(BramboxToTensor, self).__init__(dimension=dimension, dataset=dataset, max_anno=max_anno, class_label_map=class_label_map)
         if self.dimension is None and self.dataset is None:
             raise ValueError('This transform either requires a dimension or a dataset to infer the dimension')
         if self.class_label_map is None:
@@ -508,14 +509,14 @@ class BramboxToTensor(BaseTransform):
     @classmethod
     def apply(cls, data, dimension, max_anno=None, class_label_map=None):
         if not isinstance(data, collections.Sequence):
-            raise TypeError(f'BramboxToTensor only works with <brambox annotation list> [{type(data)}]')
+            raise TypeError('BramboxToTensor only works with <brambox annotation list> [{}]'.format(type(data)))
 
         anno_np = np.array([cls._tf_anno(anno, dimension, class_label_map) for anno in data], dtype=np.float32)
 
         if max_anno is not None:
             anno_len = len(data)
             if anno_len > max_anno:
-                raise ValueError(f'More annotations than maximum allowed [{anno_len}/{max_anno}]')
+                raise ValueError('More annotations than maximum allowed [{}/{}]'.format(anno_len, max_anno))
 
             z_np = np.zeros((max_anno-anno_len, 5), dtype=np.float32)
             z_np[:, 0] = -1

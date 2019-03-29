@@ -7,7 +7,7 @@ This package contains the actual detection parsers. These parsers can be used to
 from .coco import *
 from .dollar import *
 from .pascalvoc import *
-from .pickle import *
+from .pickle_file import *
 from .yaml import *
 
 # Extra

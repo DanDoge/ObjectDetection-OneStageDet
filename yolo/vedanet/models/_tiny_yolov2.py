@@ -16,7 +16,7 @@ class TinyYolov2(YoloABC):
                  #anchors = [(18,22), (60,66), (107,175), (252,113), (313,293)],
                  anchors_mask=[(0,1,2,3,4)], train_flag=1, clear=False, test_args=None):
         """ Network initialisation """
-        super().__init__()
+        super(TinyYolov2, self).__init__()
 
         # Parameters
         self.num_classes = num_classes
@@ -42,7 +42,7 @@ class TinyYolov2(YoloABC):
         features = self.head(middle_feats)
         loss_fn = loss.RegionLoss
         #loss_fn = loss.MultiboxLoss
-        
+
         self.compose(x, features, loss_fn)
 
         return features
@@ -59,6 +59,7 @@ class TinyYolov2(YoloABC):
         for module in mod.children():
             #print(module)
             if isinstance(module, (nn.ModuleList, nn.Sequential, backbone.TinyYolov2, head.TinyYolov2)):
-                yield from self.modules_recurse(module)
+                for tmp in self.modules_recurse(module):
+                    yield tmp
             else:
                 yield module

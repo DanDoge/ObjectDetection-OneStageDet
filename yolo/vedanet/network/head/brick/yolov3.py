@@ -9,7 +9,7 @@ from ... import layer as vn_layer
 class Head(nn.Module):
     custom_layers = ()
     def __init__(self, nchannels, nanchors, nclasses):
-        super().__init__()
+        super(Head, self).__init__()
         mid_nchannels = 2 * nchannels
         layer_list = [
                 vn_layer.Conv2dBatchLeaky(nchannels, mid_nchannels, 3, 1),
@@ -20,4 +20,3 @@ class Head(nn.Module):
     def forward(self, data):
         x = self.feature(data)
         return x
-

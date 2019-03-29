@@ -31,7 +31,7 @@ class GetBoundingBoxes(BaseTransform):
         The output tensor uses relative values for its coordinates.
     """
     def __init__(self, num_classes, anchors, conf_thresh):
-        super().__init__(num_classes=num_classes, anchors=anchors, conf_thresh=conf_thresh)
+        super(GetBoundingBoxes, self).__init__(num_classes=num_classes, anchors=anchors, conf_thresh=conf_thresh)
 
     @classmethod
     def apply(cls, network_output, num_classes, anchors, conf_thresh):
@@ -136,7 +136,7 @@ class NonMaxSupression(BaseTransform):
         like the ones created by :class:`lightnet.data.GetBoundingBoxes` and outputs exactly the same format.
     """
     def __init__(self, nms_thresh, class_nms=True, fast=False):
-        super().__init__(nms_thresh=nms_thresh, class_nms=class_nms, fast=fast)
+        super(NonMaxSupression, self).__init__(nms_thresh=nms_thresh, class_nms=class_nms, fast=fast)
 
     @classmethod
     def apply(cls, boxes, nms_thresh, class_nms=True, fast=False):
@@ -218,7 +218,7 @@ class TensorToBrambox(BaseTransform):
         This means you need to wrap your tensor of detections in a list if you want to run this transform on a single image.
     """
     def __init__(self, network_size, class_label_map=None):
-        super().__init__(network_size=network_size, class_label_map=class_label_map)
+        super(TensorToBrambox, self).__init__(network_size=network_size, class_label_map=class_label_map)
         if self.class_label_map is None:
             log.warn('No class_label_map given. The indexes will be used as class_labels.')
 
@@ -287,7 +287,7 @@ class ReverseLetterbox(BaseTransform):
         This means you need to wrap your tensor of detections in a list if you want to run this transform on a single image.
     """
     def __init__(self, network_size, image_size):
-        super().__init__(network_size=network_size, image_size=image_size)
+        super(ReverseLetterbox, self).__init__(network_size=network_size, image_size=image_size)
 
     @classmethod
     def apply(cls, boxes, network_size, image_size):

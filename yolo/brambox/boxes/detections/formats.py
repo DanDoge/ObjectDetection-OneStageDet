@@ -5,7 +5,7 @@
 from .coco import CocoParser
 from .dollar import DollarParser
 from .pascalvoc import PascalVocParser
-from .pickle import PickleParser
+from .pickle_file import PickleParser
 from .yaml import YamlParser
 
 __all__ = ['detection_formats']
