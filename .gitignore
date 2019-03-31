@@ -121,3 +121,6 @@ dmypy.json
 /yolo/VOCdata
 /yolo/weights/*.dw
 /yolo/COCO
+/tst code/car_images/*.jpg
+/yolo/weights/*.pt
+/yolo/weights/*.[0-9]*
