@@ -33,7 +33,14 @@ datasets = [
     "val",
 ]
 
+use_coco_classes = 0
+
+small_dataset = 1
+
 labels =  ["aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"]
+
+labels_coco = ["person", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat", "traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat", "dog", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "backpack", "umbrella", "handbag", "tie", "suitcase", "frisbee", "skis", "snowboard", "sports ball", "kite", "baseball bat", "baseball glove", "skateboard", "surfboard", "tennis racket", "bottle", "wine glass", "cup", "fork", "knife", "spoon", "bowl", "banana", "apple", "sandwich", "orange", "broccoli", "carrot", "hot dog", "pizza", "donut", "cake", "chair", "couch", "potted plant", "bed", "dining table", "toilet", "tv", "laptop", "mouse", "remote", "keyboard", "cell phone", "microwave", "oven", "toaster", "sink", "refrigerator", "book", "clock", "vase", "scissors", "teddy bear", "hair drier", "toothbrush"]
+
 change_list = {'motorcycle': 'motorbike', 'airplane': 'aeroplane', 'tv': 'tvmonitor', 'couch': 'sofa', 'dining table': 'diningtable', 'potted plant': 'pottedplant'}
 
 # helper function to construct VOC-like xml files for coco images
@@ -84,10 +91,14 @@ def get_xml_for_test_set(year, dataset):
     for img in images:
         new_objs = []
         for obj in images[img]['annotation']['object']:
-            if obj['name'] in change_list.keys():
-                obj['name'] = change_list[obj['name']]
-            if obj['name'] in labels:
-                new_objs.append(obj)
+            if use_coco_classes:
+                if obj['name'] in labels_coco:
+                    new_objs.append(obj)
+            else:
+                if obj['name'] in change_list.keys():
+                    obj['name'] = change_list[obj['name']]
+                if obj['name'] in labels:
+                    new_objs.append(obj)
         images[img]['annotation']['object'] = new_objs
     # delete images with no labels, otherwise will raise error
     del_keys = []
@@ -165,7 +176,25 @@ def get_label_for_single_file(year, dataset):
             tmp_obj.height = int(obj["bbox"][3])
             val_annos[f'{ROOT}/{dataset}{year}/{images[image]["file_name"]}'].append(tmp_obj)
     # this one contains categories not in VOC
-    bbb.generate('anno_pickle', val_annos, f'{DST}/onedet_cache/MSCOCO{dataset}{year}.pkl')
+    del_keys = []
+    for image in val_annos:
+        if val_annos[image] == []:
+            del_keys.append(image)
+    for key in del_keys:
+        del val_annos[key]
+    if use_coco_classes:
+        if small_dataset:
+            def dict_slice(adict, start, end):
+                keys = list(adict.keys())
+                dict_slice = {}
+                for k in keys[start:end]:
+                    dict_slice[k] = adict[k]
+                return dict_slice
+            val_annos = dict_slice(val_annos, 1, 640)
+            bbb.generate('anno_pickle', val_annos, f'{DST}/onedet_cache/MSCOCO{dataset}{year}small.pkl')
+            exit(0)
+        print(len(val_annos))
+        bbb.generate('anno_pickle', val_annos, f'{DST}/onedet_cache/MSCOCO{dataset}{year}.pkl')
 
     val_annos_fix_label = {}
     for image in val_annos:
@@ -182,15 +211,31 @@ def get_label_for_single_file(year, dataset):
             del_keys.append(image)
     for key in del_keys:
         del val_annos_fix_label[key]
-    print(len(val_annos_fix_label))
+    if not use_coco_classes:
+        print(len(val_annos_fix_label))
     # this one can run like pkl generated from VOC
     #val_annos_fix_label = dict(itertools.islice(val_annos_fix_label.items(), 512))
-    bbb.generate('anno_pickle', val_annos_fix_label, f'{DST}/onedet_cache/MSCOCO{dataset}{year}_fix_label.pkl')
+        if small_dataset:
+            def dict_slice(adict, start, end):
+                keys = list(adict.keys())
+                dict_slice = {}
+                for k in keys[start:end]:
+                    dict_slice[k] = adict[k]
+                return dict_slice
+            val_annos_fix_label = dict_slice(val_annos_fix_label, 1, 640)
+            bbb.generate('anno_pickle', val_annos_fix_label, f'{DST}/onedet_cache/MSCOCO{dataset}{year}_fix_label_small.pkl')
+            exit(0)
+        bbb.generate('anno_pickle', val_annos_fix_label, f'{DST}/onedet_cache/MSCOCO{dataset}{year}_fix_label.pkl')
 
     # generate test file for each label
+    if use_coco_classes:
+        val_annos_fix_label = val_annos
+        labels_here = labels_coco
+    else:
+        labels_here = labels
     if testing:
         main = {}
-        for label in labels:
+        for label in labels_here:
             main[label] = []
         for img in val_annos_fix_label:
             has_obj = {}
@@ -199,12 +244,12 @@ def get_label_for_single_file(year, dataset):
                 #print(obj)
                 has_obj[obj.class_label] = 1
             #print(has_obj)
-            for label in labels:
+            for label in labels_here:
                 if label in has_obj:
                     main[label].append([img.split('/')[-1].split('.')[0], 1])
                 else:
                     main[label].append([img.split('/')[-1].split('.')[0], -1])
-        for label in labels:
+        for label in labels_here:
             with open(f'{ROOT}/VOCtmp/ImageSets/Main/{label}_test.txt', 'w') as f:
                 for case in main[label]:
                     f.write(case[0] + ' ' + str(case[1]) + '\n')
